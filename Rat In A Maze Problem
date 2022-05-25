@@ -1,0 +1,80 @@
+
+/*
+	Note:
+	To get all the test cases accepted, make recursive calls in following order: Top, Down, Left, Right.
+	This means that if the current cell is (x, y), then order of calls should be: up cell (x-1, y), 
+	down cell (x+1, y), left cell (x, y-1) and right cell (x, y+1).
+*/
+#include<bits/stdc++.h>
+using namespace std;
+void printPath(int** solution,int n)
+{
+    //we get a path to print so we print it directly
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n;j++)
+            cout<<solution[i][j]<<" ";
+    }
+    cout<<endl;
+}
+    //int maze[][20];//size 20 due to constraints
+void mazeHelp(int** maze,int n,int** solution,int x,int y)
+{
+    //x and y are our current position in maze
+    //we need to print only when we are at end of maze
+    if(x==n-1 && y==n-1)
+    {
+        solution[x][y]=1;
+        printPath(solution,n);
+        solution[x][y]=0;//for makig solution matrix ready for next path
+        return;
+    }
+    //we cant call to  move if
+    /*
+       1. if we get out of the matrix
+       2. if x<0 or y<0
+       3. if x>=n or y>=n
+       4. if we are at block point that is 0 in maze
+       4. if we are already at 1
+    */
+    if(x<0 || y<0 || x>=n || y>=n)
+        return;
+    if(maze[x][y] == 0) return;
+    if(solution[x][y] == 1) return;
+    //if these are not the cases then we simply call recursion accordingly
+    solution[x][y]=1;//put 1 where you are standing
+    mazeHelp(maze,n,solution,x-1,y);//up
+    mazeHelp(maze,n,solution,x+1,y);//down
+    mazeHelp(maze,n,solution,x,y-1);//left
+    mazeHelp(maze,n,solution,x,y+1);//right
+    solution[x][y]=0;
+}
+void mazeHelp(int n,int** maze)
+{
+    //now making a solution matrix dynamically of n*n size
+    int** solution = new int*[n];
+    for(int i=0;i<n;i++) {
+        solution[i] = new int[n];
+        for(int j = 0; j < n; j++) {
+            solution[i][j] = 0;
+        }
+    }
+    
+    //now calling maze help to move further
+    
+    mazeHelp(maze,n,solution,0,0);
+}
+int main() {
+    int n;
+	cin>>n;
+    int **maze = new int*[n];
+    for(int i = 0; i < n; i++) {
+        maze[i] = new int[n];
+        for(int j = 0; j < n; j++) {
+            cin>>maze[i][j];
+        }
+    }
+ 
+    mazeHelp(n,maze);
+	return 0;
+}
